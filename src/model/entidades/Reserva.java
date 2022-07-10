@@ -1,8 +1,10 @@
-package Entidades;
+package model.entidades;
 
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.concurrent.TimeUnit;
+
+import model.excecoes.DominioException;
 
 public class Reserva {
 	private Integer numeroQuarto;
@@ -12,7 +14,10 @@ public class Reserva {
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
 	
-	public Reserva(Integer numeroQuarto, Date checkIn, Date checkOut) {
+	public Reserva(Integer numeroQuarto, Date checkIn, Date checkOut) throws DominioException {
+		if (!checkOut.after(checkIn)) {
+			throw new DominioException("Check-out deve ser posterior a data de check-in");
+		}
 		this.numeroQuarto = numeroQuarto;
 		this.checkIn = checkIn;
 		this.checkOut = checkOut;
@@ -41,18 +46,16 @@ public class Reserva {
 	}
 	
 	//metodo para atualizar as datas de agendamento
-	public String atualizacaoDeData(Date checkIn, Date checkOut) {
-		
+	public void atualizacaoDeData(Date checkIn, Date checkOut) throws DominioException{
 		Date agora = new Date();
 		if (checkIn.before(agora) || checkOut.before(agora)) {
-			return "Erro de resesva: As atualizações devem ser datas futuras";
+			throw new DominioException("As atualizações devem ser datas futuras");
 		}
 		if (!checkOut.after(checkIn)) {
-			return "Check-out deve ser posterior a data de check-in";
+			throw new DominioException("Check-out deve ser posterior a data de check-in");
 		}
 		this.checkIn = checkIn;
 		this.checkOut = checkOut;
-		return null;
 	}
 	
 	@Override

@@ -5,30 +5,23 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 
-import Entidades.Reserva;
+import model.entidades.Reserva;
+import model.excecoes.DominioException;
 
 public class Programa {
 
-	public static void main(String[] args) throws ParseException {
+	public static void main(String[] args){
 		Scanner sc = new Scanner(System.in);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		
-		System.out.print("Numero do quarto: ");
-		int numero = sc.nextInt();
-		System.out.print("Data do check-in (dd/MM/yyyy): ");
-		Date checkIn = sdf.parse(sc.next());
-		System.out.print("Data do check-out (dd/MM/yyyy): ");
-		Date checkOut = sdf.parse(sc.next());
-		
-		/*
-		 * condicional para testar se a 
-		 * data checkout a ser atualizada 
-		 * é posterior a data checkin
-		*/		
-		if (!checkOut.after(checkIn)) {
-			System.out.println("Erro na reserva: Check-out deve ser posterior a data de check-in");
-		}
-		else {
+		try {
+			System.out.print("Numero do quarto: ");
+			int numero = sc.nextInt();
+			System.out.print("Data do check-in (dd/MM/yyyy): ");
+			Date checkIn = sdf.parse(sc.next());
+			System.out.print("Data do check-out (dd/MM/yyyy): ");
+			Date checkOut = sdf.parse(sc.next());
+			
 			Reserva reserva = new Reserva(numero, checkIn, checkOut);
 			System.out.println("Reserva: " + reserva);
 			
@@ -39,13 +32,17 @@ public class Programa {
 			System.out.print("Data do check-out (dd/MM/yyyy): ");
 			checkOut = sdf.parse(sc.next());
 			
-			String erro = reserva.atualizacaoDeData(checkIn, checkOut);
-			if (erro != null) {
-				System.out.println("Erro na reserva: " + erro);
-			}
-			else {
-				System.out.println("Reserva: " + reserva);
-			}
+			reserva.atualizacaoDeData(checkIn, checkOut);
+		    System.out.println("Reserva: " + reserva);
+		}
+		catch (ParseException e) {
+			System.out.println("Formato da data inválida!");
+		}
+		catch (DominioException e) {
+			System.out.println("ERROR: " + e.getMessage());
+		}
+		catch (RuntimeException e) {
+			System.out.println("ERROR: Verifique os dados digitatos!");
 		}
 		
 		sc.close();
