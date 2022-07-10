@@ -41,9 +41,18 @@ public class Reserva {
 	}
 	
 	//metodo para atualizar as datas de agendamento
-	public void atualizacaoDeData(Date checkIn, Date checkOut) {
+	public String atualizacaoDeData(Date checkIn, Date checkOut) {
+		
+		Date agora = new Date();
+		if (checkIn.before(agora) || checkOut.before(agora)) {
+			return "Erro de resesva: As atualizações devem ser datas futuras";
+		}
+		if (!checkOut.after(checkIn)) {
+			return "Check-out deve ser posterior a data de check-in";
+		}
 		this.checkIn = checkIn;
 		this.checkOut = checkOut;
+		return null;
 	}
 	
 	@Override
